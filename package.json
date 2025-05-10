@@ -1,0 +1,35 @@
+{
+  "name": "snhu_cs-465",
+  "version": "1.0.0",
+  "description": "SNHU CS-465 Full Stack Web Development",
+  "keywords": [
+    "snhu",
+    "cs-465",
+    "full-stack",
+    "web-development",
+    "typescript"
+  ],
+  "author": {
+    "name": "Brett Plemons",
+    "url": "https://github.com/brettplemons",
+    "email": "brett.plemons@gmail.com"
+  },
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "changeset": "changeset",
+    "changeset version": "changeset version",
+    "changeset publish": "changeset publish",
+    "ci:publish": "pnpm publish -r"
+  },
+  "license": "ISC",
+  "packageManager": "pnpm@10.10.0",
+  "devDependencies": {
+    "@changesets/cli": "^2.29.3",
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
+    "@commitlint/types": "^19.8.1",
+    "conventional-changelog-atom": "^5.0.0"
+  }
+}
