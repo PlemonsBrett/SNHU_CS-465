@@ -1,1 +1,8 @@
+# Run tests
 pnpm test
+
+# Run linting with auto-fixes
+pnpm lint:fix
+
+# Run formatting with auto-fixes
+pnpm format:fix
