@@ -8,6 +8,15 @@
   },
   "files": {
     "ignoreUnknown": false,
+    "include": [
+      "**/*.ts",
+      "**/*.tsx",
+      "**/*.js",
+      "**/*.jsx",
+      "**/*.json",
+      "server/**/*.ts",
+      "server/**/*.js"
+    ],
     "ignore": [
       "**/*.css",
       "**/node_modules/**",

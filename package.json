@@ -23,7 +23,9 @@
     "format": "biome format .",
     "format:fix": "biome format . --write",
     "prepare": "node .husky/install.mjs",
-    "commit": "cz"
+    "commit": "cz",
+    "start:server": "cd server && pnpm run dev",
+    "build:server": "cd server && pnpm run build"
   },
   "license": "ISC",
   "packageManager": "pnpm@10.10.0",

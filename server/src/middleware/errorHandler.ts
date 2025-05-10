@@ -29,9 +29,9 @@ export const createError = (message: string, statusCode: number): AppError => {
  */
 export const errorHandler = (
   err: AppError,
-  req: Request,
+  _req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ): void => {
   err.statusCode = err.statusCode || 500;
   err.status = err.status || 'error';

@@ -1,3 +1,20 @@
+# Run tests first
 pnpm test -- --passWithNoTests
 
-pnpm lint
+# Run lint:fix to automatically fix safe issues
+pnpm lint:fix
+LINT_EXIT_CODE=$?
+
+# If lint:fix made changes, add them to the commit
+if [ $LINT_EXIT_CODE -eq 0 ]; then
+  # Safe fixes were applied, add them to the commit
+  git add .
+  echo "✅ Automatically fixed and added safe lint issues to commit"
+  exit 0
+else
+  # Unsafe fixes require attention
+  echo "❌ Lint issues found that require manual attention"
+  # Run regular lint to show all issues
+  pnpm lint
+  exit 1
+fi

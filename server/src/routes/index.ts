@@ -1,7 +1,13 @@
 import path from 'node:path';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import express from 'express';
 
-const router = express.Router();
+// ES Module compatibility for __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const router: express.Router = express.Router();
 
 // Define an array of valid page routes
 const pages = [

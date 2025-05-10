@@ -1,7 +1,13 @@
 import path from 'node:path';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import dotenv from 'dotenv';
 import express from 'express';
 import morgan from 'morgan';
+
+// ES Module compatibility for __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // Load environment variables
 dotenv.config();
@@ -29,7 +35,7 @@ app.use((req: express.Request, res: express.Response) => {
 });
 
 // Error handling middleware
-app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
+app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
   console.error(err.stack);
   res.status(500).sendFile(path.join(__dirname, '../public/error.html'));
 });
