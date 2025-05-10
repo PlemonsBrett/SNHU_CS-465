@@ -16,9 +16,7 @@ const defaults = {
 
 // Configuration object
 export const config = {
-  port: process.env.PORT
-    ? Number.parseInt(process.env.PORT, 10)
-    : defaults.port,
+  port: process.env.PORT ? Number.parseInt(process.env.PORT, 10) : defaults.port,
   nodeEnv: process.env.NODE_ENV || defaults.nodeEnv,
   logLevel: process.env.LOG_LEVEL || defaults.logLevel,
 

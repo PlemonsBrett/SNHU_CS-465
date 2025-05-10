@@ -1,0 +1,13 @@
+{
+  "name": "@snhu/biome-config",
+  "version": "1.0.0",
+  "description": "Shared Biome configurations",
+  "type": "module",
+  "files": ["base.json", "node.json", "web.json"],
+  "keywords": ["biome", "linter", "formatter"],
+  "author": "",
+  "license": "ISC",
+  "peerDependencies": {
+    "@biomejs/biome": "^1.9.4"
+  }
+}

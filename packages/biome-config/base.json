@@ -1,6 +1,5 @@
 {
   "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
-  "extends": ["./packages/biome-config/base.json"],
   "vcs": {
     "enabled": true,
     "clientKind": "git",
@@ -8,14 +7,7 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "ignore": [
-      "**/*.css",
-      "**/node_modules/**",
-      "**/dist/**",
-      "**/.swc/**",
-      "**/coverage/**",
-      "**/.next/**"
-    ]
+    "ignore": ["**/*.css", "**/node_modules/**", "**/dist/**", "**/.swc/**"]
   },
   "formatter": {
     "enabled": true,

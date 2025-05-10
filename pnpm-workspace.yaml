@@ -1,0 +1,7 @@
+packages:
+  # Include server package
+  - 'server'
+  # Include future client package
+  - 'client'
+  # Include any shared packages in the future
+  - 'packages/*'

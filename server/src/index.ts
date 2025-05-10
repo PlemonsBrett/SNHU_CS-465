@@ -34,17 +34,10 @@ app.use((req: express.Request, res: express.Response) => {
 });
 
 // Error handling middleware
-app.use(
-  (
-    err: Error,
-    req: express.Request,
-    res: express.Response,
-    next: express.NextFunction
-  ) => {
-    console.error(err.stack);
-    res.status(500).sendFile(path.join(__dirname, '../public/error.html'));
-  }
-);
+app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  console.error(err.stack);
+  res.status(500).sendFile(path.join(__dirname, '../public/error.html'));
+});
 
 // Start the server
 app.listen(PORT, () => {

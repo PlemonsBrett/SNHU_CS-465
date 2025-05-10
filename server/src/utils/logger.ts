@@ -1,7 +1,7 @@
 /**
  * Logger utility for consistent logging throughout the application
  */
-import { config } from '../config';
+import { config } from '@config';
 
 /**
  * Log levels
@@ -34,19 +34,13 @@ export class Logger {
    * @param optionalParams Optional parameters to include
    * @returns Formatted log message
    */
-  private formatMessage(
-    level: LogLevel,
-    message: string,
-    ...optionalParams: unknown[]
-  ): string {
+  private formatMessage(level: LogLevel, message: string, ...optionalParams: unknown[]): string {
     const timestamp = new Date().toISOString();
     let formattedMessage = `[${timestamp}] [${level}] [${this.context}]: ${message}`;
 
     if (optionalParams.length > 0) {
       formattedMessage += ` ${optionalParams
-        .map((param) =>
-          typeof param === 'object' ? JSON.stringify(param) : param
-        )
+        .map((param) => (typeof param === 'object' ? JSON.stringify(param) : param))
         .join(' ')}`;
     }
 
@@ -77,9 +71,7 @@ export class Logger {
    * @param optionalParams Optional parameters
    */
   public error(message: string, ...optionalParams: unknown[]): void {
-    console.error(
-      this.formatMessage(LogLevel.ERROR, message, ...optionalParams)
-    );
+    console.error(this.formatMessage(LogLevel.ERROR, message, ...optionalParams));
   }
 
   /**
@@ -89,9 +81,7 @@ export class Logger {
    */
   public debug(message: string, ...optionalParams: unknown[]): void {
     if (config.isDevelopment) {
-      console.debug(
-        this.formatMessage(LogLevel.DEBUG, message, ...optionalParams)
-      );
+      console.debug(this.formatMessage(LogLevel.DEBUG, message, ...optionalParams));
     }
   }
 }
