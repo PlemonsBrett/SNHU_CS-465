@@ -1,0 +1,3 @@
+pnpm test -- --passWithNoTests
+
+pnpm lint

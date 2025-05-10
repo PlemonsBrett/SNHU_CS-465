@@ -29,6 +29,10 @@ pnpm test
 - `pnpm changeset version` - Updates the version of the project.
 - `pnpm changeset publish` - Publishes the changeset to the registry.
 - `pnpm ci:publish` - Publishes the changeset to the registry.
+- `pnpm lint` - Check code for linting issues
+- `pnpm lint:fix` - Fix linting issues automatically
+- `pnpm format` - Check code formatting
+- `pnpm format:fix` - Fix formatting issues automatically
 
 ## Contributing
 
