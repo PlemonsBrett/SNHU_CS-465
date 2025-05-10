@@ -22,6 +22,11 @@ app.use(express.static(path.join(__dirname, '../public')));
 import routes from './routes';
 app.use('/', routes);
 
+// Test route for error page
+app.get('/test-error', (req: express.Request, res: express.Response) => {
+  res.sendFile(path.join(__dirname, '../public/error.html'));
+});
+
 // 404 handler
 app.use((req: express.Request, res: express.Response) => {
   console.log(`Route not found: ${req.method} ${req.originalUrl}`);

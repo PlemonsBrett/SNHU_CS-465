@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start:server": "cd server && pnpm run dev",
     "test": "echo \"No tests yet\" && exit 0",
     "lint": "biome check .",
     "lint:fix": "biome check . --write",
