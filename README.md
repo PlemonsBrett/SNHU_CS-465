@@ -1,6 +1,6 @@
 # SNHU_CS-465 Full Stack Web Development
 
-A full-stack web application built with TypeScript, Express, and Handlebars for the SNHU CS-465 course.
+A full-stack web application built with TypeScript, Express, and Handlebars following the MVC (Model-View-Controller) architectural pattern for the SNHU CS-465 course.
 
 ## Table of Contents
 
@@ -19,6 +19,7 @@ A full-stack web application built with TypeScript, Express, and Handlebars for 
 This project demonstrates a modern web application architecture using:
 
 - **Backend**: Node.js with Express and TypeScript
+- **Architecture**: MVC (Model-View-Controller) pattern
 - **View Engine**: Handlebars for server-side templating
 - **Development Tools**: Biome for linting/formatting, Conventional Commits for versioning
 
@@ -26,29 +27,36 @@ This project demonstrates a modern web application architecture using:
 
 ```txt
 SNHU_CS-465/
-├── server/              # Express application
-│   ├── src/             # TypeScript source code
-│   ├── public/          # Static assets
-│   ├── config/          # Configuration files
-│   ├── middleware/      # Middleware functions
-│   ├── routes/          # Route definitions
-│   ├── utils/           # Utility functions
-│   └── index.ts         # Application entry point
-├── .husky/              # Git hooks for commit linting
-├── biome.json           # Biome configuration
-└── commitlint.config.ts # Commit message linting rules
+├── server/                  # Express application
+│   ├── src/                 # TypeScript source code
+│   │   ├── controllers/     # MVC Controllers
+│   │   ├── models/          # MVC Models
+│   │   ├── views/           # MVC Views (Handlebars templates)
+│   │   │   ├── layouts/     # Layout templates
+│   │   │   └── partials/    # Partial templates
+│   │   ├── routes/          # Route definitions
+│   │   ├── middleware/      # Middleware functions
+│   │   ├── config/          # Configuration files
+│   │   ├── utils/           # Utility functions
+│   │   └── index.ts         # Application entry point
+│   └── public/              # Static assets (CSS, images, etc.)
+├── .husky/                  # Git hooks for commit linting
+├── biome.json               # Biome configuration
+└── commitlint.config.ts     # Commit message linting rules
 ```
 
 ### Server Application
 
-The [server](./server) directory contains an Express application built with TypeScript and Handlebars. It includes:
+The [server](./server) directory contains an Express application built with TypeScript and Handlebars following the MVC architectural pattern. It includes:
 
 - TypeScript for type safety
 - Express for routing and middleware
-- Handlebars for templating
-- Bootstrap for responsive UI
-- Basic error handling
-- Test route `/test-error` for error page testing
+- MVC architecture:
+  - **Models**: Data structure and business logic
+  - **Views**: Handlebars templates for rendering UI
+  - **Controllers**: Handle request/response logic
+- Basic error handling with custom error pages
+- Static asset serving
 
 For server-specific commands and information, see the [server README](./server/README.md).
 
