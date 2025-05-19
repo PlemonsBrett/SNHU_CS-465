@@ -1,30 +1,15 @@
-import path from 'node:path';
-import { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import express from 'express';
-
-// ES Module compatibility for __dirname
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import { pagesController } from '../controllers/pagesController.js';
 
 const router: express.Router = express.Router();
 
-// Define an array of valid page routes
-const pages = [
-  { route: '/', file: 'index.html' },
-  { route: '/about', file: 'about.html' },
-  { route: '/contact', file: 'contact.html' },
-  { route: '/meals', file: 'meals.html' },
-  { route: '/news', file: 'news.html' },
-  { route: '/rooms', file: 'rooms.html' },
-  { route: '/travel', file: 'travel.html' },
-];
-
-// Create routes for each page
-for (const page of pages) {
-  router.get(page.route, (_req, res) => {
-    res.sendFile(path.join(__dirname, `../../public/${page.file}`));
-  });
-}
+// Define routes with controllers
+router.get('/', pagesController.getHomePage);
+router.get('/about', pagesController.getAboutPage);
+router.get('/contact', pagesController.getContactPage);
+router.get('/meals', pagesController.getMealsPage);
+router.get('/news', pagesController.getNewsPage);
+router.get('/rooms', pagesController.getRoomsPage);
+router.get('/travel', pagesController.getTravelPage);
 
 export default router;
