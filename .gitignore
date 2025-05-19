@@ -142,3 +142,4 @@ dist
 !.vscode/launch.json
 !.vscode/tasks.json
 *.code-workspace
+.husky/pre-commit

@@ -7,9 +7,9 @@ LINT_EXIT_CODE=$?
 
 # If lint:fix made changes, add them to the commit
 if [ $LINT_EXIT_CODE -eq 0 ]; then
-  # Safe fixes were applied, add them to the commit
-  git add .
-  echo "✅ Automatically fixed and added safe lint issues to commit"
+  # Safe fixes were applied, add only previously staged files to the commit
+  git diff --name-only --cached | xargs git add
+  echo "✅ Automatically fixed and added safe lint issues to staged files only"
   exit 0
 else
   # Unsafe fixes require attention
