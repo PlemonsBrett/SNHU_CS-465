@@ -1,0 +1,19 @@
+<div class="box">
+    <div>
+        <div class="body">
+            <h1>500 - Server Error</h1>
+            <p>
+                We're sorry, but something went wrong on our end. Our team has been notified and is
+                working to fix the issue.
+            </p>
+            {{#if error}}
+            <div class="error-details">
+                <pre>{{error}}</pre>
+            </div>
+            {{/if}}
+            <p>
+                <a href="/" class="more">Return to Home Page</a>
+            </p>
+        </div>
+    </div>
+</div>
