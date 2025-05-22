@@ -1,5 +1,6 @@
 packages:
-  # Include shared packages
-  - 'packages/*'
-  # Include server package
-  - 'server'
+  - packages/*
+  - server
+onlyBuiltDependencies:
+  - '@biomejs/biome'
+  - esbuild

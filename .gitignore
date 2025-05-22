@@ -143,3 +143,5 @@ dist
 !.vscode/tasks.json
 *.code-workspace
 .husky/pre-commit
+notes/
+.windsurf/

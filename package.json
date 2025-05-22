@@ -28,7 +28,7 @@
     "build:server": "cd server && pnpm run build"
   },
   "license": "ISC",
-  "packageManager": "pnpm@10.10.0",
+  "packageManager": "pnpm@10.11.0",
   "config": {
     "commitizen": {
       "path": "@commitlint/cz-commitlint"
