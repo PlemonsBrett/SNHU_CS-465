@@ -1,0 +1,48 @@
+<div class="box">
+    <div>
+        <div class="body">
+            <a href="/travel" class="back-link">&larr; Back to all trips</a>
+            <h1>{{trip.name}}</h1>
+            
+            <div class="trip-detail">
+                <img src="{{trip.image}}" alt="{{trip.name}}" class="trip-image">
+                <div class="trip-description">
+                    {{{trip.description}}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .back-link {
+        display: inline-block;
+        margin-bottom: 20px;
+        color: #0066cc;
+        text-decoration: none;
+    }
+    .back-link:hover {
+        text-decoration: underline;
+    }
+    .trip-detail {
+        margin-top: 20px;
+    }
+    .trip-image {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+    .trip-description {
+        line-height: 1.6;
+    }
+    .trip-description p {
+        margin: 15px 0;
+    }
+    .trip-description p:first-child {
+        margin-top: 0;
+    }
+    .trip-description p:last-child {
+        margin-bottom: 0;
+    }
+</style>
