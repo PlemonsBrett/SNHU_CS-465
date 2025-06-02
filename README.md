@@ -19,9 +19,10 @@ A full-stack web application built with Express.js and Handlebars following the 
 This project demonstrates progressive full-stack web development concepts through course module assignments:
 
 - **Backend**: Node.js with Express.js
+- **Database**: MongoDB with Mongoose ODM
 - **Architecture**: MVC (Model-View-Controller) pattern
 - **View Engine**: Handlebars for server-side templating
-- **Data**: JSON-based data storage
+- **Data Storage**: MongoDB for persistent data management
 - **Styling**: Static CSS with responsive design
 
 ## Project Structure
@@ -33,6 +34,10 @@ SNHU_CS-465/
 ├── app_server/              # MVC application structure
 │   ├── controllers/         # Route controllers
 │   │   └── travel.js        # Travel page controller
+│   ├── models/              # Database models and connection
+│   │   ├── db.js           # MongoDB connection configuration
+│   │   ├── travlr.js       # Trip data model and schema
+│   │   └── seed.js         # Database seeding script
 │   ├── routes/              # Route definitions
 │   │   └── index.js         # Main router
 │   └── views/               # Handlebars templates
@@ -52,7 +57,10 @@ SNHU_CS-465/
 │   └── images/             # Image assets
 ├── journals/                # Course reflection journals
 │   ├── ModuleOne.md        # Module 1 journal entry
-│   └── ModuleThree.md      # Module 3 journal entry
+│   ├── ModuleThree.md      # Module 3 journal entry
+│   └── ModuleFour.md       # Module 4 journal entry
+├── .env                     # Environment variables (not in git)
+├── .env.example            # Environment variables template
 └── README.md               # Project documentation
 ```
 
@@ -90,13 +98,15 @@ SNHU_CS-465/
 
 - `npm start` - Start the Express server
 - `npm run dev` - Start with auto-reload using nodemon
+- `npm run seed` - Populate MongoDB with sample trip data
 
 ### Testing the Application
 
 - **Home Page**: `http://localhost:3000` - Static home page with layout and navigation
-- **Travel Page**: `http://localhost:3000/travel` - Dynamic page showing trip data from JSON with Handlebars loops
+- **Travel Page**: `http://localhost:3000/travel` - Dynamic page showing trip data from MongoDB with images
 - **Navigation**: Active page highlighting in both header and footer navigation
 - **Error Handling**: Try visiting a non-existent route to see custom error page
+- **Database**: Use MongoDB Compass to inspect the `travlr` database and `trips` collection
 
 ## Module Progress
 
@@ -141,7 +151,7 @@ SNHU_CS-465/
 
 ### MVC Architecture
 
-- **Models**: Data structures and business logic (JSON files in `/data`)
+- **Models**: Data structures and business logic using Mongoose schemas (`/app_server/models`)
 - **Views**: Handlebars templates in `/app_server/views`
 - **Controllers**: Request handlers in `/app_server/controllers`
 - **Routes**: URL routing definitions in `/app_server/routes`
@@ -151,7 +161,15 @@ SNHU_CS-465/
 - **Layout**: `main.hbs` provides the base HTML structure with header and footer partials
 - **Partials**: Reusable components like header and footer with conditional navigation highlighting
 - **Views**: Individual page templates that extend the layout and use dynamic data
-- **Data Integration**: JSON files provide content that's dynamically rendered through Handlebars loops
+- **Data Integration**: MongoDB provides persistent data storage with Mongoose ODM for data modeling
+
+### Database Architecture
+
+- **MongoDB**: NoSQL document database for flexible data storage
+- **Mongoose**: ODM (Object Document Mapper) for schema definition and validation
+- **Schema**: Trip model with validation, indexing, and proper data types
+- **Seeding**: Automated scripts to populate development data
+- **Environment Config**: Secure credential management with `.env` files
 
 ## Contributing
 
