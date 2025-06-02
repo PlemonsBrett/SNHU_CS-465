@@ -1,71 +1,66 @@
 # SNHU_CS-465 Full Stack Web Development
 
-A full-stack web application built with TypeScript, Express, and Handlebars following the MVC (Model-View-Controller) architectural pattern for the SNHU CS-465 course.
+A full-stack web application built with Express.js and Handlebars following the MVC (Model-View-Controller) architectural pattern for the SNHU CS-465 course.
 
 ## Table of Contents
 
 - [Project Overview](#project-overview)
 - [Project Structure](#project-structure)
-  - [Server Application](#server-application)
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
   - [Available Scripts](#available-scripts)
+- [Module Progress](#module-progress)
 - [Contributing](#contributing)
 - [License](#license)
 
 ## Project Overview
 
-This project demonstrates a modern web application architecture using:
+This project demonstrates progressive full-stack web development concepts through course module assignments:
 
-- **Backend**: Node.js with Express and TypeScript
+- **Backend**: Node.js with Express.js
 - **Architecture**: MVC (Model-View-Controller) pattern
 - **View Engine**: Handlebars for server-side templating
-- **Development Tools**: Biome for linting/formatting, Conventional Commits for versioning
+- **Data**: JSON-based data storage
+- **Styling**: Static CSS with responsive design
 
 ## Project Structure
 
 ```txt
 SNHU_CS-465/
-├── server/                  # Express application
-│   ├── src/                 # TypeScript source code
-│   │   ├── controllers/     # MVC Controllers
-│   │   ├── models/          # MVC Models
-│   │   ├── views/           # MVC Views (Handlebars templates)
-│   │   │   ├── layouts/     # Layout templates
-│   │   │   └── partials/    # Partial templates
-│   │   ├── routes/          # Route definitions
-│   │   ├── middleware/      # Middleware functions
-│   │   ├── config/          # Configuration files
-│   │   ├── utils/           # Utility functions
-│   │   └── index.ts         # Application entry point
-│   └── public/              # Static assets (CSS, images, etc.)
-├── .husky/                  # Git hooks for commit linting
-├── biome.json               # Biome configuration
-└── commitlint.config.ts     # Commit message linting rules
+├── app.js                   # Main application entry point
+├── package.json             # Dependencies and scripts
+├── app_server/              # MVC application structure
+│   ├── controllers/         # Route controllers
+│   │   └── travel.js        # Travel page controller
+│   ├── routes/              # Route definitions
+│   │   └── index.js         # Main router
+│   └── views/               # Handlebars templates
+│       ├── layouts/         # Layout templates
+│       │   └── main.hbs     # Main page layout
+│       ├── partials/        # Reusable template parts
+│       │   ├── header.hbs   # Site header
+│       │   └── footer.hbs   # Site footer
+│       ├── index.hbs        # Home page template
+│       ├── travel.hbs       # Travel page template
+│       └── error.hbs        # Error page template
+├── data/                    # JSON data files
+│   └── trips.json          # Travel trip data
+├── public/                  # Static assets
+│   ├── css/                # Stylesheets
+│   │   └── style.css       # Main stylesheet
+│   └── images/             # Image assets
+├── journals/                # Course reflection journals
+│   └── ModuleOne.md        # Module 1 journal entry
+└── README.md               # Project documentation
 ```
-
-### Server Application
-
-The [server](./server) directory contains an Express application built with TypeScript and Handlebars following the MVC architectural pattern. It includes:
-
-- TypeScript for type safety
-- Express for routing and middleware
-- MVC architecture:
-  - **Models**: Data structure and business logic
-  - **Views**: Handlebars templates for rendering UI
-  - **Controllers**: Handle request/response logic
-- Basic error handling with custom error pages
-- Static asset serving
-
-For server-specific commands and information, see the [server README](./server/README.md).
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js (v22 or newer)
-- pnpm package manager (`corepack enable pnpm`)
+- Node.js (v18 or newer)
+- npm package manager
 
 ### Installation
 
@@ -79,35 +74,75 @@ For server-specific commands and information, see the [server README](./server/R
 2. Install dependencies:
 
    ```bash
-   pnpm install
+   npm install
    ```
 
-3. Start the development server:
+3. Start the application:
 
    ```bash
-   pnpm start:server
+   npm start
    ```
 
 4. Open your browser and navigate to `http://localhost:3000`
 
 ### Available Scripts
 
-- `pnpm test` - Runs the test suite.
-- `pnpm changeset` - Creates a new changeset.
-- `pnpm changeset version` - Updates the version of the project.
-- `pnpm changeset publish` - Publishes the changeset to the registry.
-- `pnpm ci:publish` - Publishes the changeset to the registry.
-- `pnpm lint` - Check code for linting issues
-- `pnpm lint:fix` - Fix linting issues automatically
-- `pnpm format` - Check code formatting
-- `pnpm format:fix` - Fix formatting issues automatically
-- `pnpm commit` - Commit changes using conventional commits
-- `pnpm start:server` - Start the Express server in development mode
+- `npm start` - Start the Express server
+- `npm run dev` - Start with auto-reload using nodemon
+
+### Testing the Application
+
+- **Home Page**: `http://localhost:3000` - Static home page with layout
+- **Travel Page**: `http://localhost:3000/travel` - Dynamic page showing trip data from JSON
+
+## Module Progress
+
+- ✅ **Module 1**: Basic Express setup with static HTML files
+- ✅ **Module 2**: MVC architecture with Handlebars templating and JSON data
+- ⏳ **Module 3**: Enhanced templating and data management
+- ⏳ **Future Modules**: Database integration, API development, authentication
+
+### Key Features Implemented
+
+**Module 1:**
+- Express.js server setup
+- Static file serving
+- Basic routing
+- HTML template structure
+
+**Module 2:**
+- MVC architectural pattern implementation
+- Handlebars templating engine integration
+- Dynamic content rendering from JSON data
+- Separation of concerns (routes, controllers, views)
+- Reusable template partials (header/footer)
+- Error handling and custom error pages
+
+**Upcoming Features:**
+- Database integration (MongoDB)
+- REST API development
+- User authentication
+- Admin panel functionality
+
+## File Organization
+
+### MVC Architecture
+
+- **Models**: Data structures and business logic (JSON files in `/data`)
+- **Views**: Handlebars templates in `/app_server/views`
+- **Controllers**: Request handlers in `/app_server/controllers`
+- **Routes**: URL routing definitions in `/app_server/routes`
+
+### Template Structure
+
+- **Layout**: `main.hbs` provides the base HTML structure
+- **Partials**: Reusable components like header and footer
+- **Views**: Individual page templates that extend the layout
 
 ## Contributing
 
-Please read our [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
+Please read our [CONTRIBUTING.md](CONTRIBUTING.md) for details on our development process and how to submit contributions.
 
 ## License
 
-This project is licensed under the ISC License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the Unlicense - see the [LICENSE](LICENSE) file for details.

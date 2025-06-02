@@ -1,5 +1,2 @@
-packages:
-  # Include shared packages
-  - 'packages/*'
-  # Include server package
-  - 'server'
+onlyBuiltDependencies:
+  - core-js

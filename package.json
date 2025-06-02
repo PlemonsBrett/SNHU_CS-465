@@ -1,52 +1,47 @@
 {
-  "name": "snhu_cs-465",
-  "version": "2.0.0",
-  "description": "SNHU CS-465 Full Stack Web Development",
-  "keywords": ["snhu", "cs-465", "full-stack", "web-development", "typescript"],
+  "name": "app_server",
+  "version": "1.0.0",
+  "description": "SNHU CS-465 Full Stack Web Development - Travlr Getaways",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write ."
+  },
+  "keywords": [
+    "snhu",
+    "cs-465",
+    "full-stack",
+    "web-development",
+    "express",
+    "handlebars",
+    "mvc"
+  ],
   "author": {
     "name": "Brett Plemons",
-    "url": "https://github.com/brettplemons",
-    "email": "brett.plemons@gmail.com"
+    "email": "brett.plemons@snhu.edu",
+    "url": "https://github.com/PlemonsBrett"
   },
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "changeset": "changeset",
-    "changeset version": "changeset version",
-    "changeset publish": "changeset publish",
-    "ci:publish": "pnpm publish -r",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
-    "lint": "biome check .",
-    "lint:fix": "biome check . --write",
-    "format": "biome format .",
-    "format:fix": "biome format . --write",
-    "prepare": "node .husky/install.mjs",
-    "commit": "cz",
-    "start:server": "cd server && pnpm run dev",
-    "build:server": "cd server && pnpm run build"
-  },
-  "license": "ISC",
-  "packageManager": "pnpm@10.10.0",
-  "config": {
-    "commitizen": {
-      "path": "@commitlint/cz-commitlint"
-    }
+  "license": "Unlicense",
+  "packageManager": "pnpm@10.11.0",
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "debug": "^4.4.1",
+    "express": "^5.1.0",
+    "express-handlebars": "^8.0.3",
+    "http-errors": "^2.0.0",
+    "morgan": "^1.10.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.9.4",
-    "@changesets/cli": "^2.29.3",
-    "@commitlint/cli": "^19.8.1",
-    "@commitlint/config-conventional": "^19.8.1",
-    "@commitlint/cz-commitlint": "^19.8.1",
-    "@commitlint/types": "^19.8.1",
-    "@types/jest": "^29.5.14",
-    "commitizen": "^4.3.1",
-    "conventional-changelog-atom": "^5.0.0",
-    "husky": "^9.1.7",
-    "jest": "^29.7.0",
-    "ts-jest": "^29.3.2",
-    "tsx": "^4.19.4"
+    "biome": "^0.3.3",
+    "nodemon": "^3.1.10"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PlemonsBrett/SNHU_CS-465.git"
+  },
+  "engines": {
+    "node": ">=18.x"
   }
 }
