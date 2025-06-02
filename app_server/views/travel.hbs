@@ -5,11 +5,10 @@
             <ul id="sites">
                 {{#each trips}}
                 <li>
-                    <a href="/travel"><img src="/images/{{image}}" alt="{{name}}"></a>
-                    <h2><a href="/travel">{{name}}</a></h2>
-                    <p>{{description}}</p>
-                    <p>{{length}}</p>
-                    <span class="rate">Rate: ${{perPerson}} / Person</span>
+                    <a href="/travel"><img src="/images/{{this.image}}" alt="{{this.name}}"></a>
+                    <h2><a href="/travel">{{this.name}}</a></h2>
+                    <p>{{this.description}}</p>
+                    <p>{{this.details}}</p>
                 </li>
                 {{/each}}
             </ul>
