@@ -3,8 +3,12 @@ const router = express.Router();
 const ctrlTravel = require('../controllers/travel');
 
 /* GET home page */
-router.get('/', (req, res, next) => {
-  res.render('index', { title: 'Travlr Getaways' });
+router.get('/', function(req, res, next) {
+  res.render('index', { 
+    title: 'Travlr Getaways',
+    home: true,
+    year: new Date().getFullYear()
+  });
 });
 
 /* GET travel page */

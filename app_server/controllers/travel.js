@@ -1,14 +1,16 @@
-const fs = require('node:fs');
-const path = require('node:path');
+const fs = require('fs');
+const path = require('path');
 
-// Read trips data
+// Read trips data from JSON file
 const trips = JSON.parse(fs.readFileSync(path.join(__dirname, '../../data/trips.json'), 'utf8'));
 
 /* GET travel page */
 const travel = (req, res) => {
+  const pageTitle = 'Travel';
   res.render('travel', { 
-    title: 'Travel',
-    trips: trips 
+    title: pageTitle,
+    trips: trips,
+    year: new Date().getFullYear()
   });
 };
 
