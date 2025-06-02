@@ -1,6 +1,6 @@
 # Module Three Journal Entry
 
-**Date:** 01 June, 2025
+**Date:** 25 May, 2025
 
 **Course:** SNHU CS-465 Full Stack Web Development
 

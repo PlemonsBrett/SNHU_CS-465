@@ -8,7 +8,12 @@
                     <a href="/travel"><img src="/images/{{this.image}}" alt="{{this.name}}"></a>
                     <h2><a href="/travel">{{this.name}}</a></h2>
                     <p>{{this.description}}</p>
+                    {{#if this.details}}
                     <p>{{this.details}}</p>
+                    {{/if}}
+                    <p><strong>Length:</strong> {{this.length}}</p>
+                    <p><strong>Resort:</strong> {{this.resort}}</p>
+                    <p><strong>Rate:</strong> ${{this.perPerson}} / Person</p>
                 </li>
                 {{/each}}
             </ul>
