@@ -2,11 +2,19 @@
     <div>
         <div class="body">
             <h1>Travel</h1>
+            {{#if message}}
+            <div class="alert alert-warning">
+                <p>{{message}}</p>
+            </div>
+            {{/if}}
             <ul id="sites">
                 {{#each trips}}
                 <li>
-                    <a href="/travel"><img src="/images/{{this.image}}" alt="{{this.name}}"></a>
-                    <h2><a href="/travel">{{this.name}}</a></h2>
+                    <!-- Update href to point to API endpoint for testing -->
+                    <a href="/api/trips/{{this.code}}">
+                        <img src="/images/{{this.image}}" alt="{{this.name}}">
+                    </a>
+                    <h2><a href="/api/trips/{{this.code}}">{{this.name}}</a></h2>
                     <p>{{this.description}}</p>
                     {{#if this.details}}
                     <p>{{this.details}}</p>
