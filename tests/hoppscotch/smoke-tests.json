@@ -1,0 +1,94 @@
+{
+    "v": "2.0",
+    "name": "SNHU CS-465 Smoke Tests",
+    "description": "Quick smoke tests to verify basic API functionality",
+    "folders": [
+        {
+            "name": "Basic Connectivity",
+            "description": "Verify API is reachable and responding",
+            "requests": [
+                {
+                    "name": "API Health Check - All Trips",
+                    "method": "GET",
+                    "url": "{{BASE_URL}}/api/trips",
+                    "headers": [
+                        {
+                            "key": "Accept",
+                            "value": "application/json"
+                        }
+                    ],
+                    "tests": [
+                        {
+                            "descriptor": "API is reachable",
+                            "script": "pm.test('API is reachable', () => { pm.expect(pm.response.code).to.not.equal(0); });"
+                        },
+                        {
+                            "descriptor": "Response is successful",
+                            "script": "pm.test('Response is successful', () => { pm.response.to.have.status(200); });"
+                        },
+                        {
+                            "descriptor": "Response is JSON",
+                            "script": "pm.test('Response is JSON', () => { pm.response.to.be.json; });"
+                        }
+                    ]
+                },
+                {
+                    "name": "Single Trip Endpoint Works",
+                    "method": "GET",
+                    "url": "{{BASE_URL}}/api/trips/{{VALID_TRIP_CODE_1}}",
+                    "headers": [
+                        {
+                            "key": "Accept",
+                            "value": "application/json"
+                        }
+                    ],
+                    "tests": [
+                        {
+                            "descriptor": "Single trip endpoint responds",
+                            "script": "pm.test('Single trip endpoint responds', () => { pm.response.to.have.status(200); });"
+                        },
+                        {
+                            "descriptor": "Returns valid trip data",
+                            "script": "pm.test('Returns valid trip data', () => { const trip = pm.response.json(); pm.expect(trip).to.have.property('code'); pm.expect(trip).to.have.property('name'); });"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Critical Path",
+            "description": "Test most important user workflows",
+            "requests": [
+                {
+                    "name": "Get All Trips - Critical",
+                    "method": "GET",
+                    "url": "{{BASE_URL}}/api/trips",
+                    "tests": [
+                        {
+                            "descriptor": "Returns expected number of trips",
+                            "script": "pm.test('Returns expected number of trips', () => { const trips = pm.response.json(); pm.expect(trips.length).to.equal(parseInt(pm.environment.get('EXPECTED_TRIP_COUNT'))); });"
+                        },
+                        {
+                            "descriptor": "All trips have required data",
+                            "script": "pm.test('All trips have required data', () => { const trips = pm.response.json(); trips.forEach(trip => { pm.expect(trip.code).to.be.a('string').and.not.empty; pm.expect(trip.name).to.be.a('string').and.not.empty; pm.expect(trip.resort).to.be.a('string').and.not.empty; }); });"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "variables": [
+        {
+            "key": "BASE_URL",
+            "value": "http://localhost:3000"
+        },
+        {
+            "key": "VALID_TRIP_CODE_1",
+            "value": "GALR"
+        },
+        {
+            "key": "EXPECTED_TRIP_COUNT",
+            "value": "3"
+        }
+    ]
+}

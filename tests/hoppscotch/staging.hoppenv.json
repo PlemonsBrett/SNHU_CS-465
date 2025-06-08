@@ -1,0 +1,65 @@
+{
+    "name": "Staging Environment",
+    "variables": [
+      {
+        "key": "BASE_URL",
+        "value": "https://staging-travlr.snhu-cs465.com"
+      },
+      {
+        "key": "API_VERSION",
+        "value": "v1"
+      },
+      {
+        "key": "TIMEOUT",
+        "value": "10000"
+      },
+      {
+        "key": "ENVIRONMENT",
+        "value": "staging"
+      },
+      {
+        "key": "DEBUG_MODE",
+        "value": "false"
+      },
+      {
+        "key": "EXPECTED_TRIP_COUNT",
+        "value": "3"
+      },
+      {
+        "key": "PERFORMANCE_THRESHOLD_ALL_TRIPS",
+        "value": "1000"
+      },
+      {
+        "key": "PERFORMANCE_THRESHOLD_SINGLE_TRIP",
+        "value": "500"
+      },
+      {
+        "key": "VALID_TRIP_CODE_1",
+        "value": "GALR"
+      },
+      {
+        "key": "VALID_TRIP_CODE_2",
+        "value": "DAWR"
+      },
+      {
+        "key": "VALID_TRIP_CODE_3",
+        "value": "CLAR"
+      },
+      {
+        "key": "INVALID_TRIP_CODE",
+        "value": "INVALID"
+      },
+      {
+        "key": "NONEXISTENT_TRIP_CODE",
+        "value": "XXXX"
+      },
+      {
+        "key": "SSL_VERIFY",
+        "value": "true"
+      },
+      {
+        "key": "API_KEY",
+        "value": "staging-api-key-placeholder"
+      }
+    ]
+  }

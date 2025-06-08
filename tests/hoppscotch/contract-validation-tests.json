@@ -1,0 +1,131 @@
+{
+    "v": "2.0",
+    "name": "SNHU CS-465 API Contract Validation",
+    "description": "Validate API responses match expected contract specifications",
+    "folders": [
+        {
+            "name": "Response Schema Validation",
+            "description": "Validate response structure and data types",
+            "requests": [
+                {
+                    "name": "Get All Trips - Schema Validation",
+                    "method": "GET",
+                    "url": "{{BASE_URL}}/api/trips",
+                    "headers": [
+                        {
+                            "key": "Accept",
+                            "value": "application/json"
+                        }
+                    ],
+                    "tests": [
+                        {
+                            "descriptor": "Response is array",
+                            "script": "pm.test('Response is array', () => { const json = pm.response.json(); pm.expect(json).to.be.an('array'); });"
+                        },
+                        {
+                            "descriptor": "Each trip has correct schema",
+                            "script": "pm.test('Each trip has correct schema', () => { const trips = pm.response.json(); const schema = { type: 'object', required: ['code', 'name', 'length', 'start', 'resort', 'perPerson', 'image', 'description'], properties: { code: { type: 'string' }, name: { type: 'string' }, length: { type: 'string' }, start: { type: 'string' }, resort: { type: 'string' }, perPerson: { type: 'string' }, image: { type: 'string' }, description: { type: 'string' } } }; trips.forEach(trip => { pm.expect(trip).to.have.all.keys(schema.required); schema.required.forEach(field => { pm.expect(trip[field]).to.be.a('string').and.not.empty; }); }); });"
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Single Trip - Schema Validation",
+                    "method": "GET",
+                    "url": "{{BASE_URL}}/api/trips/{{VALID_TRIP_CODE_1}}",
+                    "headers": [
+                        {
+                            "key": "Accept",
+                            "value": "application/json"
+                        }
+                    ],
+                    "tests": [
+                        {
+                            "descriptor": "Response is object",
+                            "script": "pm.test('Response is object', () => { const json = pm.response.json(); pm.expect(json).to.be.an('object'); });"
+                        },
+                        {
+                            "descriptor": "Trip object has required fields",
+                            "script": "pm.test('Trip object has required fields', () => { const trip = pm.response.json(); const requiredFields = ['code', 'name', 'length', 'start', 'resort', 'perPerson', 'image', 'description']; requiredFields.forEach(field => { pm.expect(trip).to.have.property(field); pm.expect(trip[field]).to.be.a('string').and.not.empty; }); });"
+                        },
+                        {
+                            "descriptor": "Trip code matches request parameter",
+                            "script": "pm.test('Trip code matches request parameter', () => { const trip = pm.response.json(); pm.expect(trip.code).to.equal(pm.environment.get('VALID_TRIP_CODE_1')); });"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Error Response Schema",
+            "description": "Validate error responses follow consistent schema",
+            "requests": [
+                {
+                    "name": "404 Error Schema Validation",
+                    "method": "GET",
+                    "url": "{{BASE_URL}}/api/trips/{{INVALID_TRIP_CODE}}",
+                    "headers": [
+                        {
+                            "key": "Accept",
+                            "value": "application/json"
+                        }
+                    ],
+                    "tests": [
+                        {
+                            "descriptor": "Error response has correct status",
+                            "script": "pm.test('Error response has correct status', () => { pm.response.to.have.status(404); });"
+                        },
+                        {
+                            "descriptor": "Error response has message property",
+                            "script": "pm.test('Error response has message property', () => { const json = pm.response.json(); pm.expect(json).to.have.property('message'); pm.expect(json.message).to.be.a('string').and.not.empty; });"
+                        },
+                        {
+                            "descriptor": "Error message is descriptive",
+                            "script": "pm.test('Error message is descriptive', () => { const json = pm.response.json(); pm.expect(json.message).to.include('Trip not found'); pm.expect(json.message).to.include(pm.environment.get('INVALID_TRIP_CODE')); });"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Header Validation",
+            "description": "Validate response headers are correct",
+            "requests": [
+                {
+                    "name": "Response Headers Validation",
+                    "method": "GET",
+                    "url": "{{BASE_URL}}/api/trips",
+                    "headers": [
+                        {
+                            "key": "Accept",
+                            "value": "application/json"
+                        }
+                    ],
+                    "tests": [
+                        {
+                            "descriptor": "Content-Type header is correct",
+                            "script": "pm.test('Content-Type header is correct', () => { pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json'); });"
+                        },
+                        {
+                            "descriptor": "Response has appropriate cache headers",
+                            "script": "pm.test('Response has appropriate cache headers', () => { pm.expect(pm.response.headers.has('Cache-Control') || pm.response.headers.has('ETag') || pm.response.headers.has('Last-Modified')).to.be.true; });"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "variables": [
+        {
+            "key": "BASE_URL",
+            "value": "http://localhost:3000"
+        },
+        {
+            "key": "VALID_TRIP_CODE_1",
+            "value": "GALR"
+        },
+        {
+            "key": "INVALID_TRIP_CODE",
+            "value": "INVALID"
+        }
+    ]
+}

@@ -1,0 +1,160 @@
+{
+    "v": "2.0",
+    "name": "SNHU CS-465 Performance Tests",
+    "description": "Performance and load testing for Travlr API endpoints",
+    "folders": [
+      {
+        "name": "Response Time Tests",
+        "description": "Validate API response times meet requirements",
+        "requests": [
+          {
+            "name": "Get All Trips - Response Time",
+            "method": "GET",
+            "url": "{{BASE_URL}}/api/trips",
+            "headers": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "tests": [
+              {
+                "descriptor": "Response time under performance threshold",
+                "script": "pm.test('Response time under ' + pm.environment.get('PERFORMANCE_THRESHOLD_ALL_TRIPS') + 'ms', () => { pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get('PERFORMANCE_THRESHOLD_ALL_TRIPS'))); });"
+              },
+              {
+                "descriptor": "Response is successful",
+                "script": "pm.test('Response is successful', () => { pm.response.to.have.status(200); });"
+              },
+              {
+                "descriptor": "Response contains data",
+                "script": "pm.test('Response contains data', () => { const json = pm.response.json(); pm.expect(json).to.be.an('array'); pm.expect(json.length).to.be.above(0); });"
+              }
+            ]
+          },
+          {
+            "name": "Get Single Trip - Response Time",
+            "method": "GET",
+            "url": "{{BASE_URL}}/api/trips/{{VALID_TRIP_CODE_1}}",
+            "headers": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "tests": [
+              {
+                "descriptor": "Response time under performance threshold",
+                "script": "pm.test('Response time under ' + pm.environment.get('PERFORMANCE_THRESHOLD_SINGLE_TRIP') + 'ms', () => { pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get('PERFORMANCE_THRESHOLD_SINGLE_TRIP'))); });"
+              },
+              {
+                "descriptor": "Response is successful",
+                "script": "pm.test('Response is successful', () => { pm.response.to.have.status(200); });"
+              },
+              {
+                "descriptor": "Response contains correct trip",
+                "script": "pm.test('Response contains correct trip', () => { const trip = pm.response.json(); pm.expect(trip.code).to.equal(pm.environment.get('VALID_TRIP_CODE_1')); });"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Load Tests",
+        "description": "Test API under load conditions",
+        "requests": [
+          {
+            "name": "Concurrent Load Test - All Trips",
+            "method": "GET",
+            "url": "{{BASE_URL}}/api/trips",
+            "headers": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "tests": [
+              {
+                "descriptor": "Status code is 200",
+                "script": "pm.test('Status code is 200', () => { pm.response.to.have.status(200); });"
+              },
+              {
+                "descriptor": "Response time is reasonable under load",
+                "script": "pm.test('Response time is reasonable under load', () => { pm.expect(pm.response.responseTime).to.be.below(2000); });"
+              },
+              {
+                "descriptor": "Response data integrity maintained",
+                "script": "pm.test('Response data integrity maintained', () => { const trips = pm.response.json(); pm.expect(trips).to.be.an('array'); pm.expect(trips.length).to.equal(parseInt(pm.environment.get('EXPECTED_TRIP_COUNT'))); });"
+              }
+            ]
+          },
+          {
+            "name": "Mixed Endpoint Load Test",
+            "method": "GET",
+            "url": "{{BASE_URL}}/api/trips/{{VALID_TRIP_CODE_2}}",
+            "headers": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "tests": [
+              {
+                "descriptor": "Individual trip requests handle load",
+                "script": "pm.test('Individual trip requests handle load', () => { pm.response.to.have.status(200); pm.expect(pm.response.responseTime).to.be.below(1500); });"
+              },
+              {
+                "descriptor": "Correct trip data returned under load",
+                "script": "pm.test('Correct trip data returned under load', () => { const trip = pm.response.json(); pm.expect(trip.code).to.equal(pm.environment.get('VALID_TRIP_CODE_2')); pm.expect(trip).to.have.property('name'); pm.expect(trip).to.have.property('resort'); });"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Stress Tests",
+        "description": "Test API behavior under stress conditions",
+        "requests": [
+          {
+            "name": "High Frequency Requests",
+            "method": "GET",
+            "url": "{{BASE_URL}}/api/trips",
+            "headers": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "tests": [
+              {
+                "descriptor": "API maintains stability under stress",
+                "script": "pm.test('API maintains stability under stress', () => { pm.response.to.have.status(200); pm.expect(pm.response.responseTime).to.be.below(5000); });"
+              },
+              {
+                "descriptor": "No connection errors",
+                "script": "pm.test('No connection errors', () => { pm.expect(pm.response.code).to.not.equal(0); });"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "variables": [
+      {
+        "key": "BASE_URL",
+        "value": "http://localhost:3000"
+      },
+      {
+        "key": "VALID_TRIP_CODE_1",
+        "value": "GALR"
+      },
+      {
+        "key": "VALID_TRIP_CODE_2", 
+        "value": "DAWR"
+      },
+      {
+        "key": "EXPECTED_TRIP_COUNT",
+        "value": "3"
+      }
+    ]
+  }

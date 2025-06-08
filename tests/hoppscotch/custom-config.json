@@ -1,0 +1,42 @@
+{
+    "timeout": 10000,
+    "retry": {
+        "count": 3,
+        "delay": 1000
+    },
+    "reporter": {
+        "type": "json",
+        "output": "test-results.json",
+        "verbose": true
+    },
+    "performance": {
+        "trackResponseTimes": true,
+        "slowRequestThreshold": 2000,
+        "enableMetrics": true
+    },
+    "concurrent": {
+        "maxConcurrency": 20,
+        "delayBetweenRequests": 100
+    },
+    "validation": {
+        "strictMode": true,
+        "validateSchema": true,
+        "validateHeaders": true
+    },
+    "security": {
+        "verifySSL": true,
+        "allowInsecureRequests": false
+    },
+    "logging": {
+        "level": "info",
+        "logRequests": true,
+        "logResponses": false,
+        "logErrors": true
+    },
+    "environment": {
+        "file": "dev.hoppenv.json",
+        "overrides": {
+            "BASE_URL": "http://localhost:3000"
+        }
+    }
+}

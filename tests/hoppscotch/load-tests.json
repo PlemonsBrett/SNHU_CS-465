@@ -1,0 +1,133 @@
+{
+    "v": "2.0",
+    "name": "SNHU CS-465 Load Tests",
+    "description": "Concurrent load testing for API endpoints",
+    "folders": [
+        {
+            "name": "Concurrent Load Tests",
+            "description": "Test multiple concurrent requests",
+            "requests": [
+                {
+                    "name": "Get All Trips - Load Test",
+                    "method": "GET",
+                    "url": "{{BASE_URL}}/api/trips",
+                    "headers": [
+                        {
+                            "key": "Accept",
+                            "value": "application/json"
+                        },
+                        {
+                            "key": "User-Agent",
+                            "value": "HoppscotchCLI-LoadTest/1.0"
+                        }
+                    ],
+                    "tests": [
+                        {
+                            "descriptor": "Request succeeds under load",
+                            "script": "pm.test('Request succeeds under load', () => { pm.response.to.have.status(200); });"
+                        },
+                        {
+                            "descriptor": "Response time acceptable under load",
+                            "script": "pm.test('Response time acceptable under load', () => { pm.expect(pm.response.responseTime).to.be.below(3000); });"
+                        },
+                        {
+                            "descriptor": "Data consistency maintained",
+                            "script": "pm.test('Data consistency maintained', () => { const trips = pm.response.json(); pm.expect(trips).to.be.an('array'); pm.expect(trips.length).to.equal(3); trips.forEach(trip => { pm.expect(trip).to.have.property('code'); pm.expect(trip).to.have.property('name'); }); });"
+                        },
+                        {
+                            "descriptor": "No server errors under load",
+                            "script": "pm.test('No server errors under load', () => { pm.expect(pm.response.code).to.be.below(500); });"
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Single Trip - Load Test",
+                    "method": "GET",
+                    "url": "{{BASE_URL}}/api/trips/GALR",
+                    "headers": [
+                        {
+                            "key": "Accept",
+                            "value": "application/json"
+                        },
+                        {
+                            "key": "User-Agent",
+                            "value": "HoppscotchCLI-LoadTest/1.0"
+                        }
+                    ],
+                    "tests": [
+                        {
+                            "descriptor": "Single trip request succeeds under load",
+                            "script": "pm.test('Single trip request succeeds under load', () => { pm.response.to.have.status(200); });"
+                        },
+                        {
+                            "descriptor": "Individual trip response time acceptable",
+                            "script": "pm.test('Individual trip response time acceptable', () => { pm.expect(pm.response.responseTime).to.be.below(2000); });"
+                        },
+                        {
+                            "descriptor": "Correct trip data returned",
+                            "script": "pm.test('Correct trip data returned', () => { const trip = pm.response.json(); pm.expect(trip.code).to.equal('GALR'); pm.expect(trip.name).to.equal('Gale Reef'); });"
+                        }
+                    ]
+                },
+                {
+                    "name": "Mixed Request Pattern",
+                    "method": "GET",
+                    "url": "{{BASE_URL}}/api/trips/DAWR",
+                    "headers": [
+                        {
+                            "key": "Accept",
+                            "value": "application/json"
+                        }
+                    ],
+                    "tests": [
+                        {
+                            "descriptor": "Mixed pattern request succeeds",
+                            "script": "pm.test('Mixed pattern request succeeds', () => { pm.response.to.have.status(200); });"
+                        },
+                        {
+                            "descriptor": "Response structure consistent",
+                            "script": "pm.test('Response structure consistent', () => { const trip = pm.response.json(); pm.expect(trip).to.have.property('code'); pm.expect(trip).to.have.property('name'); pm.expect(trip).to.have.property('resort'); pm.expect(trip).to.have.property('perPerson'); });"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Error Handling Under Load",
+            "description": "Test error scenarios under concurrent load",
+            "requests": [
+                {
+                    "name": "404 Errors Under Load",
+                    "method": "GET",
+                    "url": "{{BASE_URL}}/api/trips/NOTFOUND",
+                    "headers": [
+                        {
+                            "key": "Accept",
+                            "value": "application/json"
+                        }
+                    ],
+                    "tests": [
+                        {
+                            "descriptor": "404 responses consistent under load",
+                            "script": "pm.test('404 responses consistent under load', () => { pm.response.to.have.status(404); });"
+                        },
+                        {
+                            "descriptor": "Error response format maintained",
+                            "script": "pm.test('Error response format maintained', () => { const json = pm.response.json(); pm.expect(json).to.have.property('message'); });"
+                        },
+                        {
+                            "descriptor": "Error response time reasonable",
+                            "script": "pm.test('Error response time reasonable', () => { pm.expect(pm.response.responseTime).to.be.below(1000); });"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "variables": [
+        {
+            "key": "BASE_URL",
+            "value": "http://localhost:3000"
+        }
+    ]
+}

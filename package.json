@@ -8,7 +8,27 @@
     "dev": "nodemon app.js",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
-    "seed": "node app_api/models/seed.js"
+    "seed": "node app_api/models/seed.js",
+    "test:e2e": "cross-env NODE_ENV=test cucumber-js --config cucumber.config.js",
+    "test:e2e:headless": "cross-env NODE_ENV=test HEADLESS=true cucumber-js --config cucumber.config.js",
+    "test:e2e:firefox": "cross-env NODE_ENV=test BROWSER=firefox cucumber-js --config cucumber.config.js",
+    "test:e2e:webkit": "cross-env NODE_ENV=test BROWSER=webkit cucumber-js --config cucumber.config.js",
+    "test:smoke": "cross-env NODE_ENV=test cucumber-js --config cucumber.config.js --tags @smoke",
+    "test:api": "cross-env NODE_ENV=test cucumber-js --config cucumber.config.js --tags @api",
+    "test:web": "cross-env NODE_ENV=test cucumber-js --config cucumber.config.js --tags @web",
+    "test:database": "cross-env NODE_ENV=test cucumber-js --config cucumber.config.js --tags @database",
+    "test:performance": "cross-env NODE_ENV=test cucumber-js --config cucumber.config.js --tags @performance",
+    "test:e2e:report": "cross-env NODE_ENV=test cucumber-js --config cucumber.config.js && node scripts/generate-report.js",
+    "test:hoppscotch": "hopp test --env tests/hoppscotch/dev.hoppenv.json tests/hoppscotch/travlr-api-tests.json",
+    "test:hoppscotch:smoke": "hopp test --env tests/hoppscotch/dev.hoppenv.json tests/hoppscotch/smoke-tests.json",
+    "test:hoppscotch:performance": "hopp test --env tests/hoppscotch/dev.hoppenv.json --iterations 50 tests/hoppscotch/performance-tests.json",
+    "test:hoppscotch:load": "hopp test --env tests/hoppscotch/dev.hoppenv.json --concurrent 10 --iterations 20 tests/hoppscotch/load-tests.json",
+    "test:hoppscotch:ci": "hopp test --env tests/hoppscotch/staging.hoppenv.json --reporter json --output reports/hoppscotch-results.json tests/hoppscotch/travlr-api-tests.json",
+    "test:full": "npm run test:hoppscotch:smoke && npm run test:e2e && npm run test:hoppscotch",
+    "test:ci": "npm run test:hoppscotch:ci && npm run test:e2e:headless",
+    "test:dev": "npm run test:smoke && npm run test:hoppscotch:smoke",
+    "reports:clean": "rimraf reports && mkdir -p reports/screenshots",
+    "reports:open": "open reports/cucumber-report.html"
   },
   "keywords": [
     "snhu",
@@ -37,8 +57,15 @@
     "morgan": "^1.10.0"
   },
   "devDependencies": {
+    "@cucumber/cucumber": "^11.3.0",
+    "@cucumber/pretty-formatter": "^1.0.1",
+    "@hoppscotch/cli": "^0.23.1",
+    "@playwright/test": "^1.52.0",
     "biome": "^0.3.3",
-    "nodemon": "^3.1.10"
+    "cross-env": "^7.0.3",
+    "cucumber-html-reporter": "^7.2.0",
+    "nodemon": "^3.1.10",
+    "playwright": "^1.52.0"
   },
   "repository": {
     "type": "git",
