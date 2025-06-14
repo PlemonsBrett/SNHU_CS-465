@@ -1,3 +1,5 @@
+// app.js - Updated with CORS configuration
+
 const express = require('express');
 const path = require('path');
 const createError = require('http-errors');
@@ -36,18 +38,32 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// CORS configuration for Angular admin app
+app.use('/api', (req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'http://localhost:4200');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    res.sendStatus(200);
+  } else {
+    next();
+  }
+});
+
 // Wire-up routes to controllers
 app.use('/', indexRouter);
 // Wire-up API routes
 app.use('/api', apiRouter);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function handle404(req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function errorHandler(err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
   res.status(err.status || 500);

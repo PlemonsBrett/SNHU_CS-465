@@ -130,11 +130,11 @@ SNHU_CS-465/
 
 ### Available Scripts
 
-- `npm start` - Start the Express server
-- `npm run dev` - Start with auto-reload using nodemon
-- `npm run seed` - Populate MongoDB with sample trip data
-- `npm run lint` - Check code formatting and style with Biome
-- `npm run lint:fix` - Automatically fix code formatting issues
+- `pnpm start` - Start the Express server
+- `pnpm dev` - Start with auto-reload using nodemon
+- `pnpm seed` - Populate MongoDB with sample trip data
+- `pnpm lint` - Check code formatting and style with Biome
+- `pnpm lint:fix` - Automatically fix code formatting issues
 
 ### Testing the Application
 
