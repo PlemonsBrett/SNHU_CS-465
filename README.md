@@ -105,12 +105,14 @@ SNHU_CS-465/
 ### Key Features Implemented
 
 **Module 1:**
+
 - Express.js server setup
 - Static file serving
 - Basic routing
 - HTML template structure
 
 **Module 2:**
+
 - MVC architectural pattern implementation
 - Handlebars templating engine integration
 - Dynamic content rendering from JSON data
@@ -119,6 +121,7 @@ SNHU_CS-465/
 - Error handling and custom error pages
 
 **Upcoming Features:**
+
 - Database integration (MongoDB)
 - REST API development
 - User authentication
