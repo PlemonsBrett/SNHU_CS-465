@@ -22,7 +22,9 @@ This project demonstrates progressive full-stack web development concepts throug
 - **Database**: MongoDB with Mongoose ODM
 - **Architecture**: MVC (Model-View-Controller) pattern
 - **View Engine**: Handlebars for server-side templating
-- **Data Storage**: MongoDB for persistent data management
+- **Data Storage**: MongoDB for persistent data management with schema validation
+- **Package Management**: pnpm for efficient dependency management
+- **Code Quality**: Biome for linting and formatting
 - **Styling**: Static CSS with responsive design
 
 ## Project Structure
@@ -36,7 +38,7 @@ SNHU_CS-465/
 │   │   └── travel.js        # Travel page controller
 │   ├── models/              # Database models and connection
 │   │   ├── db.js           # MongoDB connection configuration
-│   │   ├── travlr.js       # Trip data model and schema
+│   │   ├── travlr.js       # Trip data model and Mongoose schema
 │   │   └── seed.js         # Database seeding script
 │   ├── routes/              # Route definitions
 │   │   └── index.js         # Main router
@@ -61,6 +63,9 @@ SNHU_CS-465/
 │   └── ModuleFour.md       # Module 4 journal entry
 ├── .env                     # Environment variables (not in git)
 ├── .env.example            # Environment variables template
+├── biome.json              # Biome configuration for linting and formatting
+├── pnpm-lock.yaml          # pnpm lockfile for dependency versions
+├── pnpm-workspace.yaml     # pnpm workspace configuration
 └── README.md               # Project documentation
 ```
 
@@ -69,7 +74,8 @@ SNHU_CS-465/
 ### Prerequisites
 
 - Node.js (v18 or newer)
-- npm package manager
+- pnpm package manager (recommended) or npm
+- MongoDB (local installation or MongoDB Atlas cloud database)
 
 ### Installation
 
@@ -83,22 +89,44 @@ SNHU_CS-465/
 2. Install dependencies:
 
    ```bash
+   pnpm install
+   # or
    npm install
    ```
 
-3. Start the application:
+3. Set up environment variables:
 
    ```bash
+   # Copy the example environment file and configure your database settings
+   cp .env.example .env
+   # Edit .env with your MongoDB connection details
+   ```
+
+4. Seed the database with sample data:
+
+   ```bash
+   pnpm run seed
+   # or
+   npm run seed
+   ```
+
+5. Start the application:
+
+   ```bash
+   pnpm start
+   # or
    npm start
    ```
 
-4. Open your browser and navigate to `http://localhost:3000`
+6. Open your browser and navigate to `http://localhost:3000`
 
 ### Available Scripts
 
 - `npm start` - Start the Express server
 - `npm run dev` - Start with auto-reload using nodemon
 - `npm run seed` - Populate MongoDB with sample trip data
+- `npm run lint` - Check code formatting and style with Biome
+- `npm run lint:fix` - Automatically fix code formatting issues
 
 ### Testing the Application
 
@@ -108,12 +136,91 @@ SNHU_CS-465/
 - **Error Handling**: Try visiting a non-existent route to see custom error page
 - **Database**: Use MongoDB Compass to inspect the `travlr` database and `trips` collection
 
+## Database Configuration
+
+### Environment Variables
+
+The application uses environment variables for database configuration. Create a `.env` file in the root directory with the following variables:
+
+```env
+# MongoDB Configuration
+DB_HOST=127.0.0.1
+DB_PORT=27017
+DB_USER=adminUser
+DB_PASSWORD=adminPassword
+DB_AUTH_SOURCE=admin
+DB_NAME=travlr
+
+# Application Configuration
+PORT=3000
+NODE_ENV=development
+```
+
+### MongoDB Setup
+
+**Local MongoDB Installation:**
+
+1. Install MongoDB Community Server from [mongodb.com](https://www.mongodb.com/try/download/community)
+2. Start the MongoDB service
+3. Create a database user with appropriate permissions
+4. Update the `.env` file with your credentials
+
+**MongoDB Atlas (Cloud):**
+
+1. Create a free account at [MongoDB Atlas](https://www.mongodb.com/atlas)
+2. Create a new cluster
+3. Set up database access credentials
+4. Update the connection string in your `.env` file
+
+### Database Schema
+
+The application uses Mongoose schemas for data validation and structure:
+
+```javascript
+// Trip Schema (app_server/models/travlr.js)
+const tripSchema = new mongoose.Schema({
+  code: { type: String, required: true, index: true },
+  name: { type: String, required: true, index: true },
+  length: { type: String, required: true },
+  start: { type: Date, required: true },
+  resort: { type: String, required: true },
+  perPerson: { type: String, required: true },
+  image: { type: String, required: true },
+  description: { type: String, required: true }
+});
+```
+
+## Dependencies
+
+### Production Dependencies
+
+- **express**: Web application framework for Node.js
+- **express-handlebars**: Handlebars view engine for Express
+- **mongoose**: MongoDB object modeling for Node.js
+- **dotenv**: Environment variable loader
+- **cookie-parser**: Cookie parsing middleware
+- **morgan**: HTTP request logger middleware
+- **http-errors**: HTTP error handling utility
+- **debug**: Debugging utility
+
+### Development Dependencies
+
+- **nodemon**: Development server with auto-restart
+- **biome**: Fast formatter and linter for JavaScript/TypeScript
+
+### Key Changes in Module 4
+
+- **Added MongoDB Integration**: `mongoose` for database operations and schema management
+- **Environment Configuration**: `dotenv` for secure credential management
+- **Code Quality Tools**: `biome` for consistent code formatting and linting
+- **Package Management**: Migrated to `pnpm` for faster, more efficient dependency management
+
 ## Module Progress
 
 - ✅ **Module 1**: Basic Express setup with static HTML files
 - ✅ **Module 2**: MVC architecture with Handlebars templating and JSON data
 - ✅ **Module 3**: Enhanced templating with dynamic JSON data rendering
-- ⏳ **Module 4**: Database integration and data persistence
+- ✅ **Module 4**: MongoDB integration with Mongoose ODM and database persistence
 - ⏳ **Future Modules**: REST API development, authentication, admin functionality
 
 ### Key Features Implemented
@@ -135,12 +242,23 @@ SNHU_CS-465/
 - Error handling and custom error pages
 
 **Module 3:**
+
 - Advanced Handlebars templating with loops (`{{#each}}`)
 - Dynamic JSON data integration from external files
 - Enhanced trip data structure with detailed information
 - Conditional navigation highlighting
 - Improved user experience with consistent data presentation
 - Template-based content management system
+
+**Module 4:**
+
+- MongoDB database integration with Mongoose ODM
+- Database connection management with graceful shutdown handling
+- Mongoose schema definition with validation and indexing
+- Database seeding scripts for development data population
+- Asynchronous database operations with proper error handling
+- Environment-based configuration for database credentials
+- Migration from static JSON files to persistent database storage
 
 **Upcoming Features:**
 
