@@ -16,8 +16,8 @@ export class AuthenticationService {
 
   // Setup our storage and service access
   constructor(
-    @Inject(BROWSER_STORAGE) private storage: Storage,
-    private tripDataService: TripDataService
+    @Inject(BROWSER_STORAGE) private readonly storage: Storage,
+    private readonly tripDataService: TripDataService
   ) { }
 
   // Get our token from our Storage provider.
@@ -76,11 +76,19 @@ export class AuthenticationService {
   // after the calling method has checked to make sure that the user
   // isLoggedIn.
   public getCurrentUser(): User {
-    const token: string = this.getToken();
-    const { email, name } = JSON.parse(atob(token.split('.')[1]));
-    return { email, name } as User;
-  }
+    if (!this.isLoggedIn()) {
+      throw new Error('User is not logged in');
+    }
 
+    try {
+      const token: string = this.getToken();
+      const { email, name } = JSON.parse(atob(token.split('.')[1]));
+      return { email, name } as User;
+    } catch (error) {
+      console.error('Error parsing user from token:', error);
+      throw new Error('Invalid token format');
+    }
+  }
   // Login method that leverages the login method in tripDataService
   // Because that method returns an observable, we subscribe to the
   // result and only process when the Observable condition is satisfied
@@ -96,7 +104,7 @@ export class AuthenticationService {
           console.log('AuthenticationService::login - Response type:', typeof value);
           console.log('AuthenticationService::login - Response keys:', Object.keys(value || {}));
 
-          if(value && value.token) {
+          if(value?.token) {
             console.log('AuthenticationService::login - Login successful, saving token');
             console.log('AuthenticationService::login - Token to save:', value.token);
             this.authResp = value;
@@ -127,7 +135,7 @@ export class AuthenticationService {
     return this.tripDataService.register(user, passwd)
       .pipe(
         tap((value: AuthResponse) => {
-          if(value && value.token) {
+          if(value?.token) {
             console.log('AuthenticationService::register - Registration successful, saving token');
             this.authResp = value;
             this.saveToken(this.authResp.token);

@@ -11,18 +11,18 @@ import { BROWSER_STORAGE } from '../storage';
   providedIn: 'root'
 })
 export class TripDataService {
-  private apiUrl = 'http://localhost:3000/api/trips';
+  private readonly apiUrl = 'http://localhost:3000/api/trips';
   baseUrl = 'http://localhost:3000/api';
 
-  private httpOptions = {
+  private readonly httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json'
     })
   };
 
   constructor(
-    private http: HttpClient,
-    @Inject(BROWSER_STORAGE) private storage: Storage
+    private readonly http: HttpClient,
+    @Inject(BROWSER_STORAGE) private readonly storage: Storage
   ) { }
 
   // GET: Retrieve all trips
@@ -104,6 +104,34 @@ export class TripDataService {
           console.log('TripDataService::handleAuthAPICall - Raw response:', response);
           console.log('TripDataService::handleAuthAPICall - Response type:', typeof response);
           console.log('TripDataService::handleAuthAPICall - Response token:', response?.token);
+        }),
+        catchError((error) => {
+          console.error('TripDataService::handleAuthAPICall - Error:', error);
+
+          // Handle specific authentication error cases
+          if (error.status === 401) {
+            console.error('TripDataService::handleAuthAPICall - Unauthorized: Invalid credentials');
+            return throwError(() => new Error('Invalid email or password'));
+          }
+
+          if (error.status === 403) {
+            console.error('TripDataService::handleAuthAPICall - Forbidden: Access denied');
+            return throwError(() => new Error('Access denied'));
+          }
+
+          if (error.status === 404) {
+            console.error('TripDataService::handleAuthAPICall - Not Found: User not found');
+            return throwError(() => new Error('User not found'));
+          }
+
+          // Handle validation errors
+          if (error.status === 400) {
+            console.error('TripDataService::handleAuthAPICall - Bad Request:', error.error);
+            return throwError(() => new Error(error.error.message ?? 'Invalid request'));
+          }
+
+          // Generic error handler
+          return throwError(() => new Error('Authentication failed. Please try again later.'));
         })
       );
   }

@@ -13,13 +13,21 @@ const register = async (req, res) => {
 
   try {
     // Create new user object
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(req.body.email)) {
+      return res
+        .status(400)
+        .json({ "message": "Invalid email format" });
+    }
+
+    // Create new user object
     const user = new User({
-      name: req.body.name,
-      email: req.body.email,
+      name: req.body.name.trim(),
+      email: req.body.email.trim().toLowerCase(),
       hash: '',
       salt: ''
     });
-
     // Set password using our schema method
     user.setPassword(req.body.password);
 
@@ -48,13 +56,12 @@ const register = async (req, res) => {
 // Login endpoint
 const login = (req, res) => {
   // Validate message to ensure that email and password are present
-  if (!req.body.email || !req.body.password) {
-    return res
-      .status(400)
-      .json({ "message": "All fields required" });
-  }
-
-  // Delegate authentication to passport module
+    if (err) {
+      // Error in Authentication Process
+      return res
+        .status(500)
+        .json(err);
+    }  // Delegate authentication to passport module
   passport.authenticate('local', (err, user, info) => {
     if (err) {
       // Error in Authentication Process

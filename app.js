@@ -66,13 +66,41 @@ app.use('/', indexRouter);
 // Wire-up API routes
 app.use('/api', apiRouter);
 
-// Catch unauthorized error and create 401
+// Verify JWT_SECRET is set
+if (!process.env.JWT_SECRET) {
+  console.error('JWT_SECRET environment variable is not set. Authentication will not work properly.');
+  process.exit(1);
+}
+
+// Handle JWT and authorization errors
 app.use((err, req, res, next) => {
-  if(err.name === 'UnauthorizedError') {
-    res
-      .status(401)
-      .json({"message": err.name + ": " + err.message});
+  // Handle express-jwt authentication errors
+  if (err.name === 'UnauthorizedError' || 
+      err.name === 'JsonWebTokenError' ||
+      err.name === 'TokenExpiredError') {
+    
+    console.error('Authentication error:', err.message);
+    return res.status(401).json({
+      status: 'error',
+      statusCode: 401,
+      message: 'Unauthorized: Invalid or expired token',
+      error: err.message
+    });
   }
+
+  // Handle other JWT-related errors
+  if (err.name === 'NotBeforeError') {
+    console.error('Token not yet valid:', err.message); 
+    return res.status(401).json({
+      status: 'error',
+      statusCode: 401,
+      message: 'Token not yet active',
+      error: err.message
+    });
+  }
+
+  // Pass other errors to next error handler
+  next(err);
 });
 
 // catch 404 and forward to error handler

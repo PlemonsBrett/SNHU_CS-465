@@ -11,60 +11,64 @@ function authenticateJWT(req, res, next) {
   // console.log('In Middleware');
   const authHeader = req.headers['authorization'];
   // console.log('Auth Header: ' + authHeader);
-  
-  if(authHeader == null) {
+
+  if (authHeader == null) {
     console.log('Auth Header Required but NOT PRESENT!');
     return res.sendStatus(401);
   }
 
   let headers = authHeader.split(' ');
-  if(headers.length < 1) {
+  if (headers.length < 2) {
     console.log('Not enough tokens in Auth Header: ' + headers.length);
     return res.sendStatus(501);
   }
 
-  const token = authHeader.split(' ')[1];
+  const token = headers[1];
   // console.log('Token: ' + token);
-  
-  if(token == null) {
+
+  if (token == null) {
     console.log('Null Bearer Token');
     return res.sendStatus(401);
   }
 
   // console.log(process.env.JWT_SECRET);
   // console.log(jwt.decode(token));
-  
+
   jwt.verify(token, process.env.JWT_SECRET, (err, verified) => {
-    if(err) {
-      return res.sendStatus(401).json('Token Validation Error!');
-    }
+    jwt.verify(token, process.env.JWT_SECRET, (err, verified) => {
+      if (err) {
+        console.log('Token Validation Error:', err.message);
+        return res.sendStatus(401);
+      }
+      req.auth = verified; // Set the auth param to the decoded object
+    });
     req.auth = verified; // Set the auth param to the decoded object
   });
-  
+
   next(); // We need to continue or this will hang forever
 }
 
 // define route for our trips endpoint
 router
-    .route('/trips')
-    .get(tripsController.tripsList)           // GET Method routes tripsList
-    .post(authenticateJWT, tripsController.tripsAddTrip); // POST Method routes tripsAddTrip
+  .route('/trips')
+  .get(tripsController.tripsList)           // GET Method routes tripsList
+  .post(authenticateJWT, tripsController.tripsAddTrip); // POST Method routes tripsAddTrip
 
 // GET single trip by code, UPDATE trip, DELETE trip
 router
-    .route('/trips/:tripCode')
-    .get(tripsController.tripsFindByCode)
-    .put(authenticateJWT, tripsController.tripsUpdateTrip)
-    .delete(authenticateJWT, tripsController.tripsDeleteTrip);
+  .route('/trips/:tripCode')
+  .get(tripsController.tripsFindByCode)
+  .put(authenticateJWT, tripsController.tripsUpdateTrip)
+  .delete(authenticateJWT, tripsController.tripsDeleteTrip);
 
 // define route for registration endpoint
 router
-    .route('/register')
-    .post(authController.register);
+  .route('/register')
+  .post(authController.register);
 
 // define route for login endpoint
 router
-    .route('/login')
-    .post(authController.login);
+  .route('/login')
+  .post(authController.login);
 
 module.exports = router;

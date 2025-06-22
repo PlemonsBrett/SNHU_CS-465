@@ -18,14 +18,8 @@ export const JwtInterceptor: HttpInterceptorFn = (
 
   // Check if this is an authentication endpoint (login or register)
   // The URLs will be like: http://localhost:3000/api/login or http://localhost:3000/api/register
-  if (request.url.includes('/login') || request.url.includes('/register')) {
-    isAuthAPI = true;
-    console.log('JwtInterceptor::intercept - This is an auth API call');
-  } else {
-    isAuthAPI = false;
-    console.log('JwtInterceptor::intercept - This is NOT an auth API call');
-  }
-
+  const authEndpoints = ['/api/login', '/api/register'];
+  isAuthAPI = authEndpoints.some(endpoint => request.url.endsWith(endpoint));
   // Add Authorization header for all non-auth requests if user is logged in
   if (authenticationService.isLoggedIn() && !isAuthAPI) {
     let token = authenticationService.getToken();

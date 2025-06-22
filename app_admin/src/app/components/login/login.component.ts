@@ -107,14 +107,12 @@ export class LoginComponent {
   public onLoginSubmit(): void {
     this.formError = '';
 
-    if (!this.credentials.email || !this.credentials.password || !this.credentials.name) {
-      this.formError = 'All fields are required, please try again';
-      this.router.navigateByUrl('#'); // Return to login page
+    if (!this.credentials.email || !this.credentials.password) {
+      this.formError = 'Email and password are required';
     } else {
       this.doLogin();
     }
   }
-
   private doLogin(): void {
     let newUser = {
       name: this.credentials.name,
