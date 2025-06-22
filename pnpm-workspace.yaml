@@ -1,2 +1,7 @@
+packages:
+  - 'app_admin'
+  - 'app_api'
+  - 'app_server'
+
 onlyBuiltDependencies:
   - core-js

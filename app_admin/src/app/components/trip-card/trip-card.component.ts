@@ -1,6 +1,8 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { Trip } from '../../models/trip';
+import { AuthenticationService } from '../../services/authentication.service';
 
 @Component({
   selector: 'app-trip-card',
@@ -32,7 +34,7 @@ import { Trip } from '../../models/trip';
 
         <p class="card-text flex-grow-1" [innerHTML]="trip.description"></p>
 
-        <div class="mt-auto">
+        <div class="mt-auto" *ngIf="isLoggedIn()">
           <div class="btn-group w-100" role="group">
             <button
               type="button"
@@ -83,6 +85,15 @@ export class TripCardComponent {
   @Input() trip!: Trip;
   @Output() editTrip = new EventEmitter<Trip>();
   @Output() deleteTrip = new EventEmitter<string>();
+
+  constructor(
+    private readonly router: Router,
+    private readonly authenticationService: AuthenticationService
+  ) { }
+
+  public isLoggedIn(): boolean {
+    return this.authenticationService.isLoggedIn();
+  }
 
   onEdit(): void {
     this.editTrip.emit(this.trip);

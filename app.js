@@ -1,4 +1,4 @@
-// app.js - Updated with CORS configuration
+// app.js - Updated with CORS configuration and authentication
 
 const express = require('express');
 const path = require('path');
@@ -10,11 +10,19 @@ const { engine } = require('express-handlebars');
 // Load environment variables
 require('dotenv').config();
 
+// Bring in the database - Connect to DB
+require('./app_api/models/db');
+
+// Import models to register schemas
+require('./app_api/models/travlr');
+require('./app_api/models/user');
+
 const indexRouter = require('./app_server/routes/index');
 const apiRouter = require('./app_api/routes/index');
 
-// Bring in the database - Connect to DB
-require('./app_api/models/db');
+// Wire in our authentication module
+const passport = require('passport');
+require('./app_api/config/passport');
 
 const app = express();
 
@@ -37,6 +45,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(passport.initialize());
 
 // CORS configuration for Angular admin app
 app.use('/api', (req, res, next) => {
@@ -56,6 +65,15 @@ app.use('/api', (req, res, next) => {
 app.use('/', indexRouter);
 // Wire-up API routes
 app.use('/api', apiRouter);
+
+// Catch unauthorized error and create 401
+app.use((err, req, res, next) => {
+  if(err.name === 'UnauthorizedError') {
+    res
+      .status(401)
+      .json({"message": err.name + ": " + err.message});
+  }
+});
 
 // catch 404 and forward to error handler
 app.use(function handle404(req, res, next) {

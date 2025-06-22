@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { TripDataService } from '../../services/trip-data.service';
 import { TripCardComponent } from '../trip-card/trip-card.component';
 import { Trip } from '../../models/trip';
+import { AuthenticationService } from '../../services/authentication.service';
 
 @Component({
   selector: 'app-trip-listing',
@@ -20,7 +21,8 @@ import { Trip } from '../../models/trip';
             <button
               type="button"
               class="btn btn-success"
-              (click)="addTrip()">
+              (click)="addTrip()"
+              *ngIf="isLoggedIn()">
               <i class="fas fa-plus"></i> Add New Trip
             </button>
           </div>
@@ -52,7 +54,8 @@ import { Trip } from '../../models/trip';
             <button
               type="button"
               class="btn btn-primary"
-              (click)="addTrip()">
+              (click)="addTrip()"
+              *ngIf="isLoggedIn()">
               Add First Trip
             </button>
           </div>
@@ -96,12 +99,17 @@ export class TripListingComponent implements OnInit {
   messageType = '';
 
   constructor(
-    private tripDataService: TripDataService,
-    private router: Router
+    private readonly tripDataService: TripDataService,
+    private readonly router: Router,
+    private readonly authenticationService: AuthenticationService
   ) {}
 
   ngOnInit(): void {
     this.loadTrips();
+  }
+
+  public isLoggedIn(): boolean {
+    return this.authenticationService.isLoggedIn();
   }
 
   loadTrips(): void {
