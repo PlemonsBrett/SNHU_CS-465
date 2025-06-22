@@ -26,6 +26,9 @@ require('./app_api/config/passport');
 
 const app = express();
 
+// Disable x-powered-by header to prevent information disclosure
+app.disable("x-powered-by");
+
 // View engine setup
 app.engine('hbs', engine({
   extname: '.hbs',

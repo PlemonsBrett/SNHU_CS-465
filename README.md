@@ -1,6 +1,6 @@
 # SNHU_CS-465 Full Stack Web Development
 
-A full-stack web application built with Express.js and Handlebars following the MVC (Model-View-Controller) architectural pattern with RESTful API architecture for the SNHU CS-465 course.
+A full-stack web application built with Express.js and Handlebars following the MVC (Model-View-Controller) architectural pattern with RESTful API architecture and JWT-based authentication for the SNHU CS-465 course.
 
 ## Table of Contents
 
@@ -11,6 +11,9 @@ A full-stack web application built with Express.js and Handlebars following the 
   - [Installation](#installation)
   - [Available Scripts](#available-scripts)
 - [API Endpoints](#api-endpoints)
+  - [Trip Endpoints](#trip-endpoints)
+  - [Authentication Endpoints](#authentication-endpoints)
+- [Authentication](#authentication)
 - [Module Progress](#module-progress)
 - [Contributing](#contributing)
 - [License](#license)
@@ -22,6 +25,7 @@ This project demonstrates progressive full-stack web development concepts throug
 - **Backend**: Node.js with Express.js
 - **Database**: MongoDB with Mongoose ODM
 - **Architecture**: RESTful API with separation of concerns (API layer + Web application layer + SPA admin interface)
+- **Authentication**: JWT-based authentication with bcrypt password hashing
 - **View Engine**: Handlebars for server-side templating (customer-facing) + Angular for SPA (admin interface)
 - **Frontend**: Angular 20 Single Page Application for administrative functionality
 - **Data Storage**: MongoDB for persistent data management with schema validation
@@ -36,11 +40,15 @@ SNHU_CS-465/
 ├── app.js                   # Main application entry point
 ├── package.json             # Dependencies and scripts
 ├── app_api/                 # RESTful API layer
+│   ├── config/              # Configuration files
+│   │   └── passport.js      # Passport.js configuration
 │   ├── controllers/         # API controllers
+│   │   ├── authentication.js # User authentication controller
 │   │   └── trips.js         # Trip CRUD API endpoints controller
 │   ├── models/              # Database models and connection
 │   │   ├── db.js           # MongoDB connection configuration
 │   │   ├── travlr.js       # Trip data model and Mongoose schema
+│   │   ├── user.js         # User model and authentication schema
 │   │   └── seed.js         # Database seeding script
 │   └── routes/              # API route definitions
 │       └── index.js         # API router with full CRUD support
@@ -64,15 +72,23 @@ SNHU_CS-465/
 │   │   │   ├── components/  # Angular components
 │   │   │   │   ├── add-trip/      # Add trip form component
 │   │   │   │   ├── edit-trip/     # Edit trip form component
+│   │   │   │   ├── login/         # User login component
+│   │   │   │   ├── navbar/        # Navigation component
 │   │   │   │   ├── trip-card/     # Trip display card component
 │   │   │   │   └── trip-listing/  # Trip listing component
 │   │   │   ├── models/      # TypeScript interfaces
-│   │   │   │   └── trip.ts  # Trip model interface
+│   │   │   │   ├── auth-response.ts # Authentication response interface
+│   │   │   │   ├── trip.ts  # Trip model interface
+│   │   │   │   └── user.ts  # User model interface
 │   │   │   ├── services/    # Angular services
+│   │   │   │   ├── authentication.service.ts # Authentication service
 │   │   │   │   └── trip-data.service.ts # API integration service
+│   │   │   ├── utils/       # Utility files
+│   │   │   │   └── jwt.interceptor.ts # JWT token interceptor
 │   │   │   ├── app.component.ts    # Root component
 │   │   │   ├── app.config.ts       # App configuration
-│   │   │   └── app.routes.ts       # SPA routing
+│   │   │   ├── app.routes.ts       # SPA routing
+│   │   │   └── storage.ts          # Local storage utilities
 │   │   ├── assets/          # Static assets for Angular
 │   │   ├── styles.css       # Global Angular styles
 │   │   └── index.html       # Angular app entry point
@@ -90,7 +106,8 @@ SNHU_CS-465/
 │   ├── ModuleThree.md      # Module 3 journal entry
 │   ├── ModuleFour.md       # Module 4 journal entry
 │   ├── ModuleFive.md       # Module 5 journal entry
-│   └── ModuleSix.md        # Module 6 journal entry
+│   ├── ModuleSix.md        # Module 6 journal entry
+│   └── ModuleSeven.md      # Module 7 journal entry
 ├── .env                     # Environment variables (not in git)
 ├── .env.example            # Environment variables template
 ├── biome.json              # Biome configuration for linting and formatting
@@ -204,9 +221,11 @@ SNHU_CS-465/
 
 ## API Endpoints
 
-The application provides a complete RESTful API with full CRUD operations for trip data:
+The application provides a complete RESTful API with full CRUD operations for trip data and user authentication:
 
-### GET /api/trips
+### Trip Endpoints
+
+#### GET /api/trips
 
 Returns a JSON array of all trips in the database.
 
@@ -228,7 +247,7 @@ Returns a JSON array of all trips in the database.
 ]
 ```
 
-### GET /api/trips/:tripCode
+#### GET /api/trips/:tripCode
 
 Returns JSON data for a specific trip identified by its trip code.
 
@@ -236,7 +255,7 @@ Returns JSON data for a specific trip identified by its trip code.
 
 - `tripCode` - The unique code identifier for the trip
 
-### POST /api/trips
+#### POST /api/trips
 
 Creates a new trip in the database.
 
@@ -257,7 +276,7 @@ Creates a new trip in the database.
 
 **Response:** `201 Created` with the created trip object
 
-### PUT /api/trips/:tripCode
+#### PUT /api/trips/:tripCode
 
 Updates an existing trip identified by its trip code.
 
@@ -269,7 +288,7 @@ Updates an existing trip identified by its trip code.
 
 **Response:** `200 OK` with the updated trip object
 
-### DELETE /api/trips/:tripCode
+#### DELETE /api/trips/:tripCode
 
 Deletes a trip identified by its trip code.
 
@@ -279,83 +298,154 @@ Deletes a trip identified by its trip code.
 
 **Response:** `200 OK` with confirmation message and deleted trip object
 
+### Authentication Endpoints
+
+#### POST /api/users/register
+
+Registers a new user account.
+
+**Request Body:**
+
+```json
+{
+  "email": "user@example.com",
+  "password": "securePassword123"
+}
+```
+
+**Response:** `201 Created` with JWT token and user information
+
+```json
+{
+  "success": true,
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "_id": "...",
+    "email": "user@example.com"
+  }
+}
+```
+
+#### POST /api/users/login
+
+Authenticates a user and returns a JWT token.
+
+**Request Body:**
+
+```json
+{
+  "email": "user@example.com",
+  "password": "securePassword123"
+}
+```
+
+**Response:** `200 OK` with JWT token and user information
+
+```json
+{
+  "success": true,
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "_id": "...",
+    "email": "user@example.com"
+  }
+}
+```
+
+### Protected Routes
+
+The following endpoints require authentication via JWT token in the Authorization header:
+
+- `POST /api/trips` - Create new trips
+- `PUT /api/trips/:tripCode` - Update existing trips  
+- `DELETE /api/trips/:tripCode` - Delete trips
+
+**Authentication Header:**
+
+```sh
+Authorization: Bearer <JWT_TOKEN>
+```
+
 ### Error Responses
 
 All endpoints return appropriate HTTP status codes:
 
 - `200` - Success
 - `201` - Created (POST)
+- `400` - Bad Request (validation errors)
+- `401` - Unauthorized (invalid credentials)
 - `404` - Trip not found
+- `409` - Conflict (duplicate email)
 - `500` - Database error
 
 ### CORS Support
 
 All API endpoints include CORS headers to support the Angular SPA running on `http://localhost:4200`.
 
-### API Testing with Postman
+## Authentication
 
-The API endpoints can be tested using Postman or similar tools:
+### JWT Token Management
 
-1. **GET All Trips**: `GET http://localhost:3000/api/trips`
-2. **GET Specific Trip**: `GET http://localhost:3000/api/trips/GALR210214`
-3. **CREATE Trip**: `POST http://localhost:3000/api/trips` (with JSON body)
-4. **UPDATE Trip**: `PUT http://localhost:3000/api/trips/GALR210214` (with JSON body)
-5. **DELETE Trip**: `DELETE http://localhost:3000/api/trips/GALR210214`
-6. **Test Error Handling**: `GET http://localhost:3000/api/trips/INVALID_CODE`
+The application uses JSON Web Tokens (JWT) for stateless authentication:
 
-## Database Configuration
+**Token Structure:**
 
-### Environment Variables
+- **Payload**: User ID and email
+- **Expiration**: 24 hours from creation
+- **Signature**: HMAC SHA256 with secret key
 
-The application uses environment variables for database configuration. Create a `.env` file in the root directory with the following variables:
+**Token Storage:**
 
-```env
-# MongoDB Configuration
-DB_HOST=127.0.0.1
-DB_PORT=27017
-DB_USER=adminUser
-DB_PASSWORD=adminPassword
-DB_AUTH_SOURCE=admin
-DB_NAME=travlr
+- **Angular SPA**: localStorage for persistence across browser sessions
+- **Server-side**: Token verification via middleware
 
-# Application Configuration
-PORT=3000
-NODE_ENV=development
-```
+### Password Security
 
-### MongoDB Setup
+User passwords are secured using bcrypt:
 
-**Local MongoDB Installation:**
+- **Hashing**: bcrypt with 10 salt rounds
+- **Verification**: Secure comparison without plaintext storage
+- **Validation**: Minimum password requirements enforced
 
-1. Install MongoDB Community Server from [mongodb.com](https://www.mongodb.com/try/download/community)
-2. Start the MongoDB service
-3. Create a database user with appropriate permissions
-4. Update the `.env` file with your credentials
+### User Model
 
-**MongoDB Atlas (Cloud):**
-
-1. Create a free account at [MongoDB Atlas](https://www.mongodb.com/atlas)
-2. Create a new cluster
-3. Set up database access credentials
-4. Update the connection string in your `.env` file
-
-### Database Schema
-
-The application uses Mongoose schemas for data validation and structure:
+The User schema includes:
 
 ```javascript
-// Trip Schema (app_api/models/travlr.js)
-const tripSchema = new mongoose.Schema({
-  code: { type: String, required: true, index: true },
-  name: { type: String, required: true, index: true },
-  length: { type: String, required: true },
-  start: { type: Date, required: true },
-  resort: { type: String, required: true },
-  perPerson: { type: String, required: true },
-  image: { type: String, required: true },
-  description: { type: String, required: true }
+const userSchema = new mongoose.Schema({
+  email: { 
+    type: String, 
+    required: true, 
+    unique: true,
+    lowercase: true,
+    trim: true
+  },
+  password: { 
+    type: String, 
+    required: true 
+  }
 });
 ```
+
+### Authentication Flow
+
+1. **Registration**: User provides email and password
+2. **Validation**: Email format and password strength checked
+3. **Hashing**: Password hashed with bcrypt
+4. **Storage**: User saved to database
+5. **Token**: JWT token generated and returned
+6. **Login**: User provides credentials
+7. **Verification**: Password compared with hash
+8. **Token**: JWT token generated and returned
+9. **Access**: Token used for protected API endpoints
+
+### Security Features
+
+- **Password Hashing**: bcrypt with salt rounds
+- **Token Expiration**: Automatic token invalidation
+- **Input Validation**: Comprehensive request validation
+- **Error Handling**: Secure error messages without information leakage
+- **CORS Configuration**: Proper cross-origin request handling
 
 ## Dependencies
 
@@ -371,6 +461,10 @@ const tripSchema = new mongoose.Schema({
 - **morgan**: HTTP request logger middleware
 - **http-errors**: HTTP error handling utility
 - **debug**: Debugging utility
+- **jsonwebtoken**: JWT token generation and verification
+- **bcrypt**: Password hashing and verification
+- **passport**: Authentication middleware
+- **passport-jwt**: JWT strategy for Passport.js
 
 **Development Dependencies:**
 
@@ -419,6 +513,19 @@ const tripSchema = new mongoose.Schema({
 - **Error Handling**: Comprehensive error handling with user-friendly feedback messages
 - **Routing**: Single-page navigation with Angular Router for seamless user experience
 
+### Key Changes in Module 7
+
+- **JWT Authentication**: Implemented JSON Web Token-based authentication system
+- **User Registration & Login**: Complete user account management with secure password handling
+- **Password Security**: bcrypt password hashing with salt rounds for secure credential storage
+- **Protected Routes**: API endpoint protection with authentication middleware
+- **Angular Authentication**: Login component and authentication service for SPA
+- **Token Management**: JWT token storage, validation, and automatic inclusion in API requests
+- **User Model**: MongoDB schema for user accounts with email validation and uniqueness
+- **Security Middleware**: Passport.js integration with JWT strategy for route protection
+- **Error Handling**: Comprehensive authentication error responses and validation
+- **Cross-Platform Auth**: Unified authentication across Express server and Angular SPA
+
 ## Module Progress
 
 - ✅ **Module 1**: Basic Express setup with static HTML files
@@ -427,7 +534,8 @@ const tripSchema = new mongoose.Schema({
 - ✅ **Module 4**: MongoDB integration with Mongoose ODM and database persistence
 - ✅ **Module 5**: RESTful API development and separation of concerns architecture
 - ✅ **Module 6**: Angular SPA implementation with full CRUD administrative interface
-- ⏳ **Future Modules**: Authentication, user management, advanced security features
+- ✅ **Module 7**: JWT-based authentication and user management system
+- ⏳ **Future Modules**: Role-based access control, advanced security features, real-time features
 
 ### Key Features Implemented
 
@@ -489,31 +597,46 @@ const tripSchema = new mongoose.Schema({
 - CORS-enabled API communication between Angular SPA and Express server
 - Professional administrative dashboard with card-based trip display
 
+**Module 7:**
+
+- JWT-based authentication system with stateless token management
+- User registration and login endpoints with comprehensive validation
+- bcrypt password hashing with salt rounds for secure credential storage
+- Passport.js middleware integration with JWT strategy for route protection
+- Angular authentication service with login component and token management
+- HTTP interceptor for automatic JWT token inclusion in API requests
+- User model with email validation and database constraints
+- Protected API endpoints requiring authentication for administrative operations
+- Cross-platform authentication support for both Express and Angular applications
+- Comprehensive error handling for authentication failures and validation errors
+
 **Upcoming Features:**
 
-- User authentication and authorization
-- Role-based access control
-- Advanced security features
+- Role-based access control and user permissions
+- Advanced security features (rate limiting, CSRF protection)
 - Real-time data synchronization
 - Progressive Web App (PWA) capabilities
+- User profile management and preferences
 
 ## File Organization
 
 ### Three-Layer Architecture
 
 - **API Layer** (`/app_api`): RESTful endpoints, database models, and business logic
-  - Controllers: API endpoint handlers with full CRUD operations and JSON responses
-  - Models: Mongoose schemas and database connection
-  - Routes: API route definitions with parameter handling and CORS support
+  - Controllers: API endpoint handlers with full CRUD operations, authentication, and JSON responses
+  - Models: Mongoose schemas for trips and users with validation and indexing
+  - Routes: API route definitions with parameter handling, CORS support, and authentication middleware
+  - Config: Passport.js configuration for JWT authentication strategy
 - **Web Layer** (`/app_server`): Customer-facing presentation logic and user interface
   - Controllers: Web page controllers that consume API endpoints
   - Views: Handlebars templates for server-side rendering
   - Routes: Web route definitions for page navigation
 - **SPA Layer** (`/app_admin`): Angular Single Page Application for administration
-  - Components: Reusable Angular components for trip management
-  - Services: API integration services using HttpClient and RxJS
-  - Models: TypeScript interfaces for type safety
-  - Routing: Client-side navigation with Angular Router
+  - Components: Reusable Angular components for trip management and authentication
+  - Services: API integration services using HttpClient and RxJS with authentication
+  - Models: TypeScript interfaces for type safety including authentication models
+  - Routing: Client-side navigation with Angular Router and authentication guards
+  - Utils: JWT interceptor for automatic token management
 
 ### Angular SPA Structure
 
@@ -522,11 +645,19 @@ const tripSchema = new mongoose.Schema({
   - `add-trip`: Form component for creating new trips
   - `edit-trip`: Form component for updating existing trips
   - `trip-card`: Reusable card component for displaying trip information
+  - `login`: Authentication component for user login
+  - `navbar`: Navigation component with authentication state
 - **Services**: Business logic and API communication layer
   - `trip-data.service`: HTTP client service for all trip-related API calls
+  - `authentication.service`: Authentication service for login/logout and token management
 - **Models**: TypeScript interfaces for compile-time type checking
   - `trip.ts`: Trip data structure interface
-- **Routing**: Single-page navigation configuration
+  - `user.ts`: User data structure interface
+  - `auth-response.ts`: Authentication response interface
+- **Routing**: Single-page navigation configuration with authentication guards
+- **Utils**: Utility services for cross-cutting concerns
+  - `jwt.interceptor.ts`: HTTP interceptor for automatic JWT token inclusion
+  - `storage.ts`: Local storage utilities for token persistence
 
 ### Template Structure
 
