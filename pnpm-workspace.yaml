@@ -1,7 +1,11 @@
 packages:
-  - 'app_admin'
-  - 'app_api'
-  - 'app_server'
+  - app_admin
+  - app_api
+  - app_server
 
 onlyBuiltDependencies:
+  - '@parcel/watcher'
   - core-js
+  - esbuild
+  - lmdb
+  - msgpackr-extract
